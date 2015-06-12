@@ -158,7 +158,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
             ViewDataDictionary viewData)
         {
             var result = htmlHelper.PartialAsync(partialViewName, model, viewData);
-            return TaskHelper.WaitAndThrowIfFaulted(result);
+            return result.GetAwaiter().GetResult();
         }
 
         /// <summary>

@@ -707,7 +707,7 @@ namespace Microsoft.AspNet.Mvc.Razor
             EnsureMethodCanBeInvoked(nameof(RenderSection));
 
             var task = RenderSectionAsyncCore(name, required);
-            return TaskHelper.WaitAndThrowIfFaulted(task);
+            return task.GetAwaiter().GetResult();
         }
 
         /// <summary>

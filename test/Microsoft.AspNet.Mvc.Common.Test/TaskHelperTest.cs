@@ -16,7 +16,7 @@ namespace Microsoft.AspNet.Mvc
             var task = Task.FromResult(0);
 
             // Act and Assert (does not throw)
-            TaskHelper.WaitAndThrowIfFaulted(task);
+            task.GetAwaiter().GetResult();
         }
 
         [Fact]
@@ -27,7 +27,7 @@ namespace Microsoft.AspNet.Mvc
             var task = CreatingFailingTask(message);
 
             // Act and Assert
-            var ex = Assert.Throws<Exception>(() => TaskHelper.WaitAndThrowIfFaulted(task));
+            var ex = Assert.Throws<Exception>(() => task.GetAwaiter().GetResult());
             Assert.Equal(message, ex.Message);
         }
 
@@ -43,7 +43,7 @@ namespace Microsoft.AspNet.Mvc
             });
 
             // Act and Assert
-            var ex = Assert.Throws<Exception>(() => TaskHelper.WaitAndThrowIfFaulted(task));
+            var ex = Assert.Throws<Exception>(() => task.GetAwaiter().GetResult());
             Assert.Equal(message, ex.Message);
         }
 
