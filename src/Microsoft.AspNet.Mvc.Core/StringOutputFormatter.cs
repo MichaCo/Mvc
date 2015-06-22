@@ -14,8 +14,8 @@ namespace Microsoft.AspNet.Mvc
     {
         public StringOutputFormatter()
         {
-            SupportedEncodings.Add(Encodings.UTF8EncodingWithoutBOM);
-            SupportedEncodings.Add(Encodings.UTF16EncodingLittleEndian);
+            SupportedEncodings.Add(UTF8EncodingWithoutBOM);
+            SupportedEncodings.Add(UTF16EncodingLittleEndian);
             SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse("text/plain"));
         }
 

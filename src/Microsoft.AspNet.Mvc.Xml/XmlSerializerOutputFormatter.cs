@@ -8,7 +8,6 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
-using Microsoft.AspNet.Mvc.Internal;
 using Microsoft.Framework.Internal;
 using Microsoft.Net.Http.Headers;
 
@@ -37,8 +36,8 @@ namespace Microsoft.AspNet.Mvc.Xml
         /// <param name="writerSettings">The settings to be used by the <see cref="XmlSerializer"/>.</param>
         public XmlSerializerOutputFormatter([NotNull] XmlWriterSettings writerSettings)
         {
-            SupportedEncodings.Add(Encodings.UTF8EncodingWithoutBOM);
-            SupportedEncodings.Add(Encodings.UTF16EncodingLittleEndian);
+            SupportedEncodings.Add(UTF8EncodingWithoutBOM);
+            SupportedEncodings.Add(UTF16EncodingLittleEndian);
 
             SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse("application/xml"));
             SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse("text/xml"));
