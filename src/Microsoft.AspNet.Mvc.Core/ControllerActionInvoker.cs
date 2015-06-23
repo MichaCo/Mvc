@@ -112,7 +112,7 @@ namespace Microsoft.AspNet.Mvc.Core
             }
 
             // Unwrap potential Task<T> types.
-            var actualReturnType = TypeHelper.GetTaskInnerTypeOrNull(declaredReturnType) ?? declaredReturnType;
+            var actualReturnType = GetTaskInnerTypeOrNull(declaredReturnType) ?? declaredReturnType;
             if (actionReturnValue == null &&
                 typeof(IActionResult).GetTypeInfo().IsAssignableFrom(actualReturnType.GetTypeInfo()))
             {
@@ -124,6 +124,23 @@ namespace Microsoft.AspNet.Mvc.Core
             {
                 DeclaredType = actualReturnType
             };
+        }
+
+        private static Type GetTaskInnerTypeOrNull([NotNull] Type type)
+        {
+            var typeInfo = type.GetTypeInfo();
+            if (typeInfo.IsGenericType && !typeInfo.IsGenericTypeDefinition)
+            {
+                var genericTypeDefinition = typeInfo.GetGenericTypeDefinition();
+                var genericArguments = typeInfo.GenericTypeArguments;
+                if (genericArguments.Length == 1 && typeof(Task<>) == genericTypeDefinition)
+                {
+                    // Only Return if there is a single argument.
+                    return genericArguments[0];
+                }
+            }
+
+            return null;
         }
     }
 }

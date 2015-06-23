@@ -43,7 +43,7 @@ namespace Microsoft.AspNet.Mvc
         /// <inheritdoc />
         public virtual string Action(UrlActionContext actionContext)
         {
-            var valuesDictionary = TypeHelper.ObjectToDictionary(actionContext.Values);
+            var valuesDictionary = ObjectToDictionary(actionContext.Values);
 
             if (actionContext.Action != null)
             {
@@ -73,7 +73,7 @@ namespace Microsoft.AspNet.Mvc
         /// <inheritdoc />
         public virtual string RouteUrl(UrlRouteContext routeContext)
         {
-            var valuesDictionary = TypeHelper.ObjectToDictionary(routeContext.Values);
+            var valuesDictionary = ObjectToDictionary(routeContext.Values);
 
             var path = GeneratePathFromRoute(routeContext.RouteName, valuesDictionary);
             if (path == null)
@@ -135,6 +135,27 @@ namespace Microsoft.AspNet.Mvc
                 Protocol = _httpContext.Request.Scheme,
                 Host = _httpContext.Request.Host.ToUriComponent()
             });
+        }
+
+        private static IDictionary<string, object> ObjectToDictionary(object value)
+        {
+            var dictionary = value as IDictionary<string, object>;
+            if (dictionary != null)
+            {
+                return new Dictionary<string, object>(dictionary, StringComparer.OrdinalIgnoreCase);
+            }
+
+            dictionary = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+
+            if (value != null)
+            {
+                foreach (var helper in PropertyHelper.GetProperties(value))
+                {
+                    dictionary[helper.Name] = helper.GetValue(value);
+                }
+            }
+
+            return dictionary;
         }
 
         private static string GenerateClientUrl([NotNull] PathString applicationPath,
