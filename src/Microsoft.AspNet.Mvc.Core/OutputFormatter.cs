@@ -23,16 +23,6 @@ namespace Microsoft.AspNet.Mvc
         private readonly List<MediaTypeHeaderValue> _supportedMediaTypes;
 
         /// <summary>
-        /// Returns UTF8 Encoding without BOM and throws on invalid bytes.
-        /// </summary>
-        public static readonly Encoding UTF8EncodingWithoutBOM = InputFormatter.UTF8EncodingWithoutBOM;
-
-        /// <summary>
-        /// Returns UTF16 Encoding which uses littleEndian byte order with BOM and throws on invalid bytes.
-        /// </summary>
-        public static readonly Encoding UTF16EncodingLittleEndian = InputFormatter.UTF16EncodingLittleEndian;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="OutputFormatter"/> class.
         /// </summary>
         protected OutputFormatter()

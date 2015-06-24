@@ -13,7 +13,7 @@ namespace Microsoft.AspNet.Mvc
     {
         private readonly MediaTypeHeaderValue DefaultContentType = new MediaTypeHeaderValue("text/plain")
         {
-            Encoding = OutputFormatter.UTF8EncodingWithoutBOM
+            Encoding = Encoding.UTF8
         };
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Microsoft.AspNet.Mvc
             if (contentTypeHeader == null)
             {
                 contentTypeHeader = DefaultContentType;
-                encoding = OutputFormatter.UTF8EncodingWithoutBOM;
+                encoding = Encoding.UTF8;
             }
             else
             {
@@ -49,9 +49,9 @@ namespace Microsoft.AspNet.Mvc
                     // 1. Do not modify the user supplied content type
                     // 2. Parse here to handle parameters apart from charset
                     contentTypeHeader = MediaTypeHeaderValue.Parse(contentTypeHeader.ToString());
-                    contentTypeHeader.Encoding = OutputFormatter.UTF8EncodingWithoutBOM;
+                    contentTypeHeader.Encoding = Encoding.UTF8;
 
-                    encoding = OutputFormatter.UTF8EncodingWithoutBOM;
+                    encoding = Encoding.UTF8;
                 }
                 else
                 {

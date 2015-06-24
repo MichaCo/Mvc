@@ -113,9 +113,9 @@ namespace Microsoft.AspNet.Mvc.Test
             testFormatter.WriteResponseHeaders(formatterContext);
 
             // Assert
-            Assert.Equal(OutputFormatter.UTF16EncodingLittleEndian.WebName, formatterContext.SelectedEncoding.WebName);
-            Assert.Equal(OutputFormatter.UTF16EncodingLittleEndian, formatterContext.SelectedEncoding);
-            Assert.Equal("application/doesNotSetContext; charset=" + OutputFormatter.UTF16EncodingLittleEndian.WebName,
+            Assert.Equal(Encoding.Unicode.WebName, formatterContext.SelectedEncoding.WebName);
+            Assert.Equal(Encoding.Unicode, formatterContext.SelectedEncoding);
+            Assert.Equal("application/doesNotSetContext; charset=" + Encoding.Unicode.WebName,
                          formatterContext.SelectedContentType.ToString());
         }
 
@@ -307,7 +307,7 @@ namespace Microsoft.AspNet.Mvc.Test
             public DoesNotSetContext()
             {
                 SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse("application/doesNotSetContext"));
-                SupportedEncodings.Add(UTF16EncodingLittleEndian);
+                SupportedEncodings.Add(Encoding.Unicode);
             }
 
             public override bool CanWriteResult(OutputFormatterContext context, MediaTypeHeaderValue contentType)
