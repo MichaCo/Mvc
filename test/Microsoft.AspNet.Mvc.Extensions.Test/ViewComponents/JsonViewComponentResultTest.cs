@@ -18,29 +18,12 @@ namespace Microsoft.AspNet.Mvc
     public class JsonViewComponentResultTest
     {
         [Fact]
-        public void Execute_SerializesData_UsingSpecifiedFormatter()
-        {
-            // Arrange
-            var view = Mock.Of<IView>();
-            var buffer = new MemoryStream();
-            var viewComponentContext = GetViewComponentContext(view, buffer);
-
-            var expectedFormatter = new JsonOutputFormatter();
-            var result = new JsonViewComponentResult(1, expectedFormatter);
-
-            // Act
-            result.Execute(viewComponentContext);
-            buffer.Position = 0;
-
-            // Assert
-            Assert.Equal(expectedFormatter, result.Formatter);
-            Assert.Equal("1", new StreamReader(buffer).ReadToEnd());
-        }
-
-        [Fact]
         public void Execute_UsesFormatter_WithSpecifiedSerializerSettings()
         {
             // Arrange
+            var abcdIndentedUTF8Bytes
+                = new byte[] { 123, 13, 10, 32, 32, 34, 102, 111, 111, 34, 58, 32, 34, 97, 98, 99, 100, 34, 13, 10, 125 };
+
             var view = Mock.Of<IView>();
             var buffer = new MemoryStream();
             var viewComponentContext = GetViewComponentContext(view, buffer);
@@ -48,65 +31,14 @@ namespace Microsoft.AspNet.Mvc
             var serializerSettings = new JsonSerializerSettings();
             serializerSettings.Formatting = Formatting.Indented;
 
-            var result = new JsonViewComponentResult("abc", serializerSettings);
+            var result = new JsonViewComponentResult(new { foo = "abcd" }, serializerSettings);
+            viewComponentContext.ViewContext.HttpContext.Response.Body = buffer;
 
             // Act
             result.Execute(viewComponentContext);
 
             // Assert
-            Assert.Same(serializerSettings, result.Formatter.SerializerSettings);
-        }
-
-        [Fact]
-        public void Execute_FallsbackToServices_WhenNoJsonFormatterIsProvided()
-        {
-            // Arrange
-            var view = Mock.Of<IView>();
-
-            var serviceProvider = new Mock<IServiceProvider>();
-
-            serviceProvider
-                .Setup(p => p.GetService(typeof(JsonOutputFormatter)))
-                .Returns(new JsonOutputFormatter())
-                .Verifiable();
-
-            var buffer = new MemoryStream();
-
-            var result = new JsonViewComponentResult(1);
-            var viewComponentContext = GetViewComponentContext(view, buffer);
-            viewComponentContext.ViewContext.HttpContext.RequestServices = serviceProvider.Object;
-
-            // Act
-            result.Execute(viewComponentContext);
-            buffer.Position = 0;
-
-            // Assert
-            Assert.Equal("1", new StreamReader(buffer).ReadToEnd());
-            serviceProvider.Verify();
-        }
-
-        [Fact]
-        public void Execute_Throws_IfNoFormatterCanBeResolved()
-        {
-            // Arrange
-            var expected = "No service for type 'Microsoft.AspNet.Mvc.JsonOutputFormatter'" +
-                " has been registered.";
-
-            var view = Mock.Of<IView>();
-
-            var serviceProvider = new ServiceCollection().BuildServiceProvider();
-
-            var buffer = new MemoryStream();
-
-            var result = new JsonViewComponentResult(1);
-            var viewComponentContext = GetViewComponentContext(view, buffer);
-            viewComponentContext.ViewContext.HttpContext.RequestServices = serviceProvider;
-
-            // Act
-            var ex = Assert.Throws<InvalidOperationException>(() => result.Execute(viewComponentContext));
-
-            // Assert
-            Assert.Equal(expected, ex.Message);
+            Assert.Equal(abcdIndentedUTF8Bytes, buffer.ToArray());
         }
 
         private static ViewComponentContext GetViewComponentContext(IView view, Stream stream)
