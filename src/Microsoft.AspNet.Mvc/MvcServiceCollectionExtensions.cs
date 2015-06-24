@@ -34,18 +34,6 @@ namespace Microsoft.Framework.DependencyInjection
         }
 
         /// <summary>
-        /// Configures a set of <see cref="AntiForgeryOptions"/> for the application.
-        /// </summary>
-        /// <param name="services">The services available in the application.</param>
-        /// <param name="setupAction">The <see cref="AntiForgeryOptions"/> which need to be configured.</param>
-        public static void ConfigureAntiforgery(
-            [NotNull] this IServiceCollection services,
-            [NotNull] Action<AntiForgeryOptions> setupAction)
-        {
-            services.Configure(setupAction);
-        }
-
-        /// <summary>
         /// Configures a set of <see cref="MvcFormatterMappingOptions"/> for the application.
         /// </summary>
         /// <param name="services">The services available in the application.</param>
@@ -255,12 +243,6 @@ namespace Microsoft.Framework.DependencyInjection
                 .Transient<IViewComponentInvokerFactory, DefaultViewComponentInvokerFactory>());
             services.TryAdd(ServiceDescriptor.Transient<IViewComponentHelper, DefaultViewComponentHelper>());
 
-            // Security and Authorization
-            services.TryAdd(ServiceDescriptor.Singleton<IClaimUidExtractor, DefaultClaimUidExtractor>());
-            services.TryAdd(ServiceDescriptor.Singleton<AntiForgery, AntiForgery>());
-            services.TryAdd(ServiceDescriptor
-                .Singleton<IAntiForgeryAdditionalDataProvider, DefaultAntiForgeryAdditionalDataProvider>());
-
             // Api Description
             services.TryAdd(ServiceDescriptor
                 .Singleton<IApiDescriptionGroupCollectionProvider, ApiDescriptionGroupCollectionProvider>());
@@ -321,6 +303,7 @@ namespace Microsoft.Framework.DependencyInjection
         private static void ConfigureDefaultServices(IServiceCollection services)
         {
             services.AddDataProtection();
+            services.AddAntiforgery();
             services.AddCors();
             services.AddAuthorization();
             services.AddWebEncoders();
